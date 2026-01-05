@@ -1,0 +1,46 @@
+Screen {
+        align: center middle;
+    }
+
+    #main-container {
+        width: 100%;
+        height: 100%;
+    }
+
+    DataTable {
+        height: 1fr;
+    }
+
+    #status-bar {
+        dock: bottom;
+        height: 3;
+        background: $panel;
+        padding: 1;
+    }
+
+    #edit-dialog {
+        width: 60;
+        height: auto;
+        border: thick $background 80%;
+        background: $surface;
+        padding: 1;
+    }
+
+    #button-container {
+        width: 100%;
+        height: auto;
+        layout: horizontal;
+        align: center middle;
+        border: round $accent;
+    }
+
+    #button-container Button {
+        margin: 0 1;
+        border: round $primary;
+        background: $boost;
+        text-style: bold;
+    }
+
+    Label {
+        margin-bottom: 1;
+    }
