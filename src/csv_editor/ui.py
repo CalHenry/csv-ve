@@ -1,12 +1,15 @@
+import sys
 from pathlib import Path
 
-from data_model import CSVDataModel
 from rich.text import Text
 from textual import events
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
-from textual.widgets import DataTable, Footer, Header, Input, Label
+from textual.widgets import DataTable, Footer, Header, Input
+
+from .data_model import CSVDataModel
+from .static_index import IndexColumn
 
 
 # -----Textual app-----#
@@ -28,13 +31,28 @@ class CSVEditorApp(App):
         self.csv_path = csv_path
         self.data_model = CSVDataModel(csv_path)
 
+    '''
     def compose(self) -> ComposeResult:
         """Create child widgets"""
         yield Header()
         with Vertical(id="main-container"):
+            yield IndexColumn(id="index_col", content=("tests"))
             yield DataTable(cursor_type="cell", header_height=2, zebra_stripes=True)
             yield Input(placeholder="Edit cell value...", id="formula_bar")
-            # yield Label("", id="status-bar")
+        yield Footer()
+    '''
+
+    def compose(self) -> ComposeResult:
+        yield Header()
+
+        with Vertical(id="main-container"):
+            self.index_col = IndexColumn(id="index_col")
+            yield self.index_col
+
+            yield DataTable(cursor_type="cell", header_height=2, zebra_stripes=True)
+
+            yield Input(placeholder="Edit cell value...", id="formula_bar")
+
         yield Footer()
 
     def on_mount(self) -> None:
@@ -46,6 +64,7 @@ class CSVEditorApp(App):
     def load_data(self) -> None:
         """Load CSV data into the DataTable"""
         table = self.query_one(DataTable)
+        index_col = self.query_one(IndexColumn)
         table.clear(columns=True)
 
         df = self.data_model.df
@@ -66,6 +85,9 @@ class CSVEditorApp(App):
 
         # Update header with file info
         self.sub_title = f"{self.csv_path} | {len(df)} rows × {len(df.columns)} cols"
+
+        # Set up table cursor
+        table.cursor_type = "cell"
 
     def action_add_new_row(self) -> None:
         print("hey")
@@ -159,8 +181,6 @@ class CSVEditorApp(App):
 
 
 def main():
-    import sys
-
     if len(sys.argv) < 2:
         print("Usage: python app.py <csv_file>")
         sys.exit(1)
