@@ -9,6 +9,12 @@ Screen {
 
     DataTable {
         height: 1fr;
+        scrollbar-size: 1 1
+    }
+
+    #formula_bar {
+        outline: round $primary
+
     }
 
     #status-bar {
@@ -19,26 +25,11 @@ Screen {
     }
 
     #edit-dialog {
-        width: 60;
+        width: auto;
         height: auto;
         border: thick $background 80%;
-        background: $surface;
+        background: $primary;
         padding: 1;
-    }
-
-    #button-container {
-        width: 100%;
-        height: auto;
-        layout: horizontal;
-        align: center middle;
-        border: round $accent;
-    }
-
-    #button-container Button {
-        margin: 0 1;
-        border: round $primary;
-        background: $boost;
-        text-style: bold;
     }
 
     Label {
