@@ -26,23 +26,15 @@ class CSVEditorApp(App):
         Binding("e", "edit_cell", "Edit Cell", show=True),
         Binding("escape", "cancel_edit", "Cancel", show=True),
         Binding("n", "insert_new_row_below_cursor", "new_row", show=True),
+        Binding("b", "insert_new_col_right_cursor", "new_col", show=True),
+        Binding("ctrl+n", "delete_row", "del_row", show=False),
+        Binding("ctrl+b", "delete_column", "del_col", show=False),
     ]
 
     def __init__(self, csv_path: str):
         super().__init__()
         self.csv_path = csv_path
         self.data_model = CSVDataModel(csv_path)
-
-    '''
-    def compose(self) -> ComposeResult:
-        """Create child widgets"""
-        yield Header()
-        with Vertical(id="main-container"):
-            yield IndexColumn(id="index_col", content=("tests"))
-            yield DataTable(cursor_type="cell", header_height=2, zebra_stripes=True)
-            yield Input(placeholder="Edit cell value...", id="formula_bar")
-        yield Footer()
-    '''
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -87,9 +79,6 @@ class CSVEditorApp(App):
         # Update header with file info
         self.sub_title = f"{self.csv_path} | {len(df)} rows × {len(df.columns)} cols"
 
-        # Set up table cursor
-        table.cursor_type = "cell"
-
     def _update_row_indices(self) -> None:
         """Update the index column for all rows"""
         table = self.query_one(DataTable)
@@ -125,7 +114,6 @@ class CSVEditorApp(App):
         try:
             current_value = table.get_cell_at(event.coordinate)
             formula_bar.value = str(current_value)
-            print(table.get_row_index(row_key="10"))
         except Exception:
             # Handle case where cell might not exist
             formula_bar.value = ""
@@ -217,7 +205,87 @@ class CSVEditorApp(App):
 
         # Restore cursor to its position
         new_row = min(row + 1, self.data_model.row_count() - 1)
-        table.move_cursor(row=new_row, column=col, animate=True)
+        table.move_cursor(row=new_row, column=col)
+
+    def action_insert_new_col_right_cursor(self) -> None:
+        """
+        Insert a new empty column to the right of the current cursor position.
+        Uses CSVDataModel (that uses polars) to create the new column
+        - insert the new column in the data model (polars)
+        - reload the table (textual)
+        - move the cursor back to the original position so it appears like it didn't move
+        """
+        table = self.query_one(DataTable)
+
+        if table.cursor_coordinate is None:
+            return
+
+        row, col = table.cursor_coordinate
+
+        try:
+            self.data_model.insert_column(col + 1)
+        except Exception as e:
+            self.notify(f"Failed to insert column: {e}", severity="error")
+            return
+
+        self.load_data()  # reset cursor position to the first cell (by default)
+
+        # Restore cursor to its position
+        new_col = min(col + 1, self.data_model.column_count() - 1)
+        table.move_cursor(row=row, column=new_col)
+
+    # ---remove row or col--- #
+    def action_delete_row(self) -> None:
+        """
+        Delete the row at the current cursor position.
+        """
+        table = self.query_one(DataTable)
+
+        if table.cursor_coordinate is None:
+            return
+
+        row, col = table.cursor_coordinate
+
+        try:
+            self.data_model.delete_row(row)
+        except ValueError as e:
+            self.notify(str(e), severity="warning")
+            return
+        except Exception as e:
+            self.notify(f"Failed to delete row: {e}", severity="error")
+            return
+
+        self.load_data()
+
+        # Move cursor to the same row (or the last row if we deleted the last one)
+        new_row = min(row, self.data_model.row_count() - 1)
+        table.move_cursor(row=new_row, column=col)
+
+    def action_delete_column(self) -> None:
+        """
+        Delete the column at the current cursor position.
+        """
+        table = self.query_one(DataTable)
+
+        if table.cursor_coordinate is None:
+            return
+
+        row, col = table.cursor_coordinate
+
+        try:
+            self.data_model.delete_column(col)
+        except ValueError as e:
+            self.notify(str(e), severity="warning")
+            return
+        except Exception as e:
+            self.notify(f"Failed to delete column: {e}", severity="error")
+            return
+
+        self.load_data()
+
+        # Move cursor to the same column (or the last column if we deleted the last one)
+        new_col = min(col, self.data_model.column_count() - 1)
+        table.move_cursor(row=row, column=new_col)
 
 
 def main():
