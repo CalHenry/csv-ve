@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from typing import Literal
 
 from rich.text import Text
 from textual import events
@@ -53,8 +54,13 @@ class CSVEditorApp(App):
         self.theme = "catppuccin-mocha"
         self.load_data()
 
+    # ----cursor---- #
     def _set_cursor_type(
-        self, table: DataTable, cursor_type: str, row: int = 0, column: int = 0
+        self,
+        table: DataTable,
+        cursor_type: Literal["cell", "row", "column", "none"],
+        row: int = 0,
+        column: int = 0,
     ) -> None:
         """Helper to set cursor type and position"""
         table.cursor_type = cursor_type
@@ -62,8 +68,6 @@ class CSVEditorApp(App):
             table.move_cursor(column=column)
         elif cursor_type == "row":
             table.move_cursor(row=row)
-        elif cursor_type == "cell":
-            table.move_cursor(row=row, column=column)
 
     def on_data_table_header_selected(self, event: DataTable.HeaderSelected) -> None:
         """Column header clicked - switch to column cursor"""
@@ -74,15 +78,6 @@ class CSVEditorApp(App):
     ) -> None:
         """Row label clicked - switch to row cursor"""
         self._set_cursor_type(event.data_table, "row", row=event.row_index)
-
-    def on_data_table_cell_selected(self, event: DataTable.CellSelected) -> None:
-        """Cell clicked - switch to cell cursor"""
-        self._set_cursor_type(
-            event.data_table,
-            "cell",
-            row=event.coordinate.row,
-            column=event.coordinate.column,
-        )
 
     # ---file/ table actions--- #
     def load_data(self) -> None:
@@ -181,20 +176,26 @@ class CSVEditorApp(App):
             self._clear_edit_state(table)
 
     def on_key(self, event: events.Key) -> None:
-        """Cancel the edit with espace key"""
+        """
+        ESCAPE key behavior:
+        - Cancel the edit if formula bar is the focus
+        - back to cell cursor otherwise (if already cell cursor do nothink)
+        """
         formula_bar = self.query_one("#formula_bar", Input)
+        table = self.query_one(DataTable)
         if (
             event.key == "escape"
             and formula_bar.has_focus
             and hasattr(self, "editing_cell")
         ):
-            table = self.query_one(DataTable)
             row_key, col_key, original_value = self.editing_cell
             # Restore original value if it was modified
             formula_bar.value = ""
             self._clear_edit_state(table)
             event.prevent_default()
             event.stop()
+        else:
+            table.cursor_type = "cell"
 
     def _clear_edit_state(self, table: DataTable) -> None:
         """Helper to clean up after edit completion or cancelation"""
