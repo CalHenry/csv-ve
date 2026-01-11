@@ -12,14 +12,14 @@ from .data_model import CSVDataModel
 from .helpers import (
     col_label_spreasheet_format,
 )
-from .screens.screen import CoordInputScreen
+from .screens.goto_cell_screen import CoordInputScreen
 
 
 ##-----Textual app-----##
 class CSVEditorApp(App):
     """A Textual app for editing CSV files"""
 
-    CSS_PATH = "csveditorapp.tcss"
+    CSS_PATH = "csv_ve.tcss"
     BINDINGS = [
         Binding("q", "quit", "Quit"),
         Binding("s", "save", "Save"),
@@ -52,6 +52,7 @@ class CSVEditorApp(App):
 
     def on_mount(self) -> None:
         """Load data when app starts"""
+        self.title = "CSV-VE"
         self.theme = "catppuccin-mocha"
         self.load_data()
 
