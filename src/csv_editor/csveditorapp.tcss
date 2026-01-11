@@ -2,6 +2,11 @@ Screen {
         align: center middle;
     }
 
+    Header {
+        background: $surface-darken-1;
+        border: hkey $primary;
+        height: 3;
+    }
     #main-container {
         width: 100%;
         height: 100%;
@@ -13,29 +18,15 @@ Screen {
     }
 
     #formula_bar {
-        outline: hkey $primary;
+        background: $surface-darken-1;
+        outline: hkey $primary-darken-3;
         opacity: 50%;
     }
 
     #formula_bar:focus {
         outline: round $primary;
+        background: $surface-darken-2;
         opacity: 100%;
-    }
-
-
-    #status-bar {
-        dock: bottom;
-        height: 3;
-        background: $panel;
-        padding: 1;
-    }
-
-    #edit-dialog {
-        width: auto;
-        height: auto;
-        border: thick $background 80%;
-        background: $primary;
-        padding: 1;
     }
 
     Label {
