@@ -1,5 +1,3 @@
-import sys
-from pathlib import Path
 from typing import Literal
 
 from textual import events
@@ -17,7 +15,7 @@ from .screens.goto_cell_screen import CoordInputScreen
 
 ##-----Textual app-----##
 class CSVEditorApp(App):
-    """A Textual app for editing CSV files"""
+    """A Textual app to view and edit CSV files"""
 
     CSS_PATH = "csv_ve.tcss"
     BINDINGS = [
@@ -38,10 +36,11 @@ class CSVEditorApp(App):
         Binding("l", "table_right", "Right"),
     ]
 
-    def __init__(self, csv_path: str):
+    def __init__(self, csv_path: str, theme: str | None):
         super().__init__()
         self.csv_path = csv_path
         self.data_model = CSVDataModel(csv_path)
+        self.theme = theme or "catppuccin-mocha"
 
     def compose(self) -> ComposeResult:
         yield Header(icon="􀝥")
@@ -58,7 +57,6 @@ class CSVEditorApp(App):
     def on_mount(self) -> None:
         """Load data when app starts"""
         self.title = "CSV-VE"
-        self.theme = "catppuccin-mocha"
         self.load_data()
 
     # ----cursor---- #
@@ -381,22 +379,3 @@ class CSVEditorApp(App):
                 table.focus()
 
         self.push_screen(CoordInputScreen(max_row, max_col), handle_navigation)
-
-
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python app.py <csv_file>")
-        sys.exit(1)
-
-    csv_file = sys.argv[1]
-
-    if not Path(csv_file).exists():
-        print(f"Error: File '{csv_file}' not found")
-        sys.exit(1)
-
-    app = CSVEditorApp(csv_file)
-    app.run()
-
-
-if __name__ == "__main__":
-    main()
