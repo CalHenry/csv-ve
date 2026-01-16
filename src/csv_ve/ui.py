@@ -30,10 +30,10 @@ class CSVEditorApp(App):
         Binding("ctrl+b", "delete_column", "del_col", show=False),
         Binding("ctrl+g", "goto_cell", "jump cell", show=True),
         Binding("ctrl+c", "copy_cell", "copy", show=False),
-        Binding("h", "table_left", "Left"),
-        Binding("j", "table_down", "Down"),
-        Binding("k", "table_up", "Up"),
-        Binding("l", "table_right", "Right"),
+        Binding("h", "table_left", "Left", show=False),
+        Binding("j", "table_down", "Down", show=False),
+        Binding("k", "table_up", "Up", show=False),
+        Binding("l", "table_right", "Right", show=False),
     ]
 
     def __init__(self, csv_path: str, theme: str | None):
@@ -132,7 +132,7 @@ class CSVEditorApp(App):
         """Save the CSV file"""
         try:
             self.data_model.save()
-            self.notify("Saved successfully", severity="information")
+            self.notify("Saved", severity="information")
         except Exception as e:
             self.notify(f"Save failed: {e}", severity="error")
 

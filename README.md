@@ -6,7 +6,13 @@ Navigate using the arrow keys or the mouse. Edit, add or remove row and columns 
 
 > Many similar tui tools exist for CSV and also written in Go or Rust so likely with better performances that Python. But I wanted to make my own and Textual is an awesome library to create simple and visually appealing apps with minimal overhead.
 
-Screenshots:
+### Features
+- Edit data: add or remove rows and columns, edit or copy cell content
+- Navigation: arrow keys, basic vim keys (hjkl), jumpt to a cell/ row/ col using coordiantes (ex: 12:3 - go to row 12, column 3)
+- Launch the app using the command line
+
+
+\+ all built-in Textual features (many dark and light themes, command palette, keymap cheatsheet, SVG screenshots)
 
 ![snapshot](screenshots/basic_snapshot.png)
  
@@ -28,7 +34,6 @@ Components:
 
 Textual has many built-in themes that you can select using the command palette
 
-
 ## Installation (with uv)  
 Install uv:
 Homebrew:
@@ -39,13 +44,57 @@ Unix:
 ```sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
-
+Install using uv
 ```shell
 uv tool install https://github.com/CalHenry/csv-ve.git
 ```
+<details>
+<summary>To install UV:</summary>
 
+MacOs:
+```sh
+brew install uv # MacOs
+```
+Unix:
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+</details>
 
-### Features
+*(optional)* Use an alias
+```sh
+echo '' >> ~/.zshrc
+echo 'alias csv="csve-ve"' >> ~/.zshrc 
+# you can set you favorite theme in the alias to always launch the app with this theme: 
+# alias csv="csve-ve --theme 'textual-light'
+source ~/.zshrc
+```
+Folder structure
+```sh
+.
+├── LICENSE
+├── pyproject.toml
+├── README.md
+├── screenshots
+│   └── basic_snapshot.png
+├── src
+│   └── csv_ve
+│       ├── __init__.py
+│       ├── __main__.py
+│       ├── cli.py          # <- cli script
+│       ├── csv_ve.tcss
+│       ├── data_model.py   # <- 'backend' with polars
+│       ├── helpers.py
+│       ├── screens
+│       │   ├── goto_cell_screen.py
+│       │   └── screen.tcss
+│       └── ui.py           # <- Textual app
+├── test_csv.csv
+└── uv.lock
+```
+---
+
+### Dev
 - [X] being able to add new rows (used the data model and not textual to achieve this)
 - [x] being able to add new cols
 - [X] jump to a specific cell or row or col using coordinates (format: **row:col** e.g. 12:3 - only support numeric coordinates)
@@ -55,7 +104,7 @@ uv tool install https://github.com/CalHenry/csv-ve.git
 - [X] copy cell content directly from the table (content of highlighted cell)
 - [ ] resize columns
 - [X] cli
-- [X] vim naviagtion keys (hjkl)
+- [X] vim navigation keys (hjkl)
 - [ ] filtering rows/ search values ? 
 
 #### Theme

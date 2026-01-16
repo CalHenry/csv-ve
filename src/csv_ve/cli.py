@@ -34,7 +34,7 @@ def main(
         None,
         "-t",
         "--theme",
-        help="light, dark or any Textual theme name. Can change the theme in the running app",
+        help="light, dark or any Textual theme name. Can change the theme inside the app",
     ),
 ):
     """
