@@ -35,15 +35,7 @@ Components:
 Textual has many built-in themes that you can select using the command palette
 
 ## Installation (with uv)  
-Install uv:
-Homebrew:
-```sh
-brew install uv
-```
-Unix:
-```sh
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+
 Install using uv
 ```shell
 uv tool install https://github.com/CalHenry/csv-ve.git
@@ -51,9 +43,9 @@ uv tool install https://github.com/CalHenry/csv-ve.git
 <details>
 <summary>To install UV:</summary>
 
-MacOs:
+Macos:
 ```sh
-brew install uv # MacOs
+brew install uv
 ```
 Unix:
 ```sh
