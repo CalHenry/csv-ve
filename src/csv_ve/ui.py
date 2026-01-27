@@ -36,8 +36,8 @@ class CSVEditorApp(App):
         Binding("k", "table_up", "Up", show=False),
         Binding("l", "table_right", "Right", show=False),
         Binding("l", "table_right", "Right", show=False),
-        Binding("G", "table_bottom", "Right", show=False),
-        Binding("gg", "table_top", "Right", show=False),
+        Binding("G", "table_bottom", "Bottom", show=False),
+        Binding("g", "table_top", "Top", show=False),
     ]
 
     def __init__(self, csv_path: str, theme: str | None):
