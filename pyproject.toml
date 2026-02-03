@@ -12,6 +12,7 @@ dependencies = [
     "dirty-equals>=0.11",
     "polars>=1.36.1",
     "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
     "textual>=7.0.0",
     "textual-dev>=1.8.0",
     "typer>=0.21.1",
@@ -23,3 +24,6 @@ csv-ve = "csv_ve.cli:csv_ve_cli"
 [build-system]
 requires = ["uv_build>=0.9.21,<0.10.0"]
 build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

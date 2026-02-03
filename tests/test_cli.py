@@ -1,6 +1,5 @@
 from io import StringIO
 
-import pytest
 from dirty_equals import IsStr
 from rich.console import Console
 from typer.testing import CliRunner

@@ -7,7 +7,7 @@ import pytest
 @pytest.fixture
 def temp_csv_with_headers(tmp_path):
     """
-    Creates a temporary CSV file with headers for testing.
+    Creates a temporary 3x3 CSV file with headers for testing.
     """
 
     csv_content = """name,age,city
@@ -18,15 +18,6 @@ Charlie,35,Berlin"""
     csv_file = tmp_path / "test_data.csv"
     csv_file.write_text(csv_content)
 
-    return csv_file
-
-
-@pytest.fixture
-def temp_csv_no_headers(tmp_path):
-    csv_content = """Alice,30,Paris
-Bob,25,London"""
-    csv_file = tmp_path / "no_headers.csv"
-    csv_file.write_text(csv_content)
     return csv_file
 
 
@@ -61,7 +52,7 @@ def mock_app():
 
 @pytest.fixture
 def temp_txt(tmp_path):
-    txt_content = """some text"""
+    txt_content = "some text"
 
     txt_file = tmp_path / "test_data.txt"
     txt_file.write_text(txt_content)
