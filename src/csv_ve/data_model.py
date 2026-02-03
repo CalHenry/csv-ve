@@ -22,9 +22,7 @@ class CSVDataModel:
 
     # ---basic operations--- #
     def load(self) -> None:
-        """
-        Load csv with polars
-        """
+        """Load csv with polars"""
         if not self.file_path.exists():
             raise FileNotFoundError(f"CSV file not found: {self.file_path}")
 
@@ -52,7 +50,6 @@ class CSVDataModel:
         """
         if self.df is None:
             raise RuntimeError("No data to save")
-
         self.df.write_csv(self.file_path)
         self.modified = False
 
@@ -67,6 +64,7 @@ class CSVDataModel:
             value: New value for the cell
 
         Raises:
+            RunTimeError: If there is no data
             IndexError: If indices are out of bounds
         """
         if self.df is None:
@@ -119,10 +117,7 @@ class CSVDataModel:
 
         values = [None] * num_cols  # empty rows
 
-        new_row = pl.DataFrame(
-            [values],
-            schema=self.df.schema,
-        )
+        new_row = pl.DataFrame([values], schema=self.df.schema, orient="row")
 
         top = self.df.slice(0, row_idx)
         bottom = self.df.slice(row_idx)
