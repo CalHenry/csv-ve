@@ -64,7 +64,6 @@ class CSVEditorApp(App):
         self.load_data()
 
     # ----cursor---- #
-
     def _set_cursor_type(
         self,
         table: DataTable,
