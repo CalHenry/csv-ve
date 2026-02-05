@@ -12,9 +12,7 @@ class CSVDataModel:
 
     def __init__(self, file_path: str):
         self.file_path = Path(file_path)
-        self.df: Optional[pl.DataFrame] = (
-            None  # Lazyframes ?? (maybe later when prototype works with df)
-        )
+        self.df: Optional[pl.DataFrame] = None
         self.modified = False
         self.has_header = True
 
@@ -34,7 +32,7 @@ class CSVDataModel:
                 infer_schema_length=1000,
             )
         except Exception as e:
-            raise Exception(f"Failed to load CSV: {e}")
+            raise Exception(f"Failed to load CSV: {e}") from e
 
         self.modified = False
 

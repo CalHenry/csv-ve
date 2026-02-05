@@ -7,7 +7,7 @@ import pytest
 @pytest.fixture
 def temp_csv_with_headers(tmp_path):
     """
-    Creates a temporary 3x3 CSV file with headers for testing.
+    Creates a temporary 3x3 CSV file with headers.
     """
 
     csv_content = """name,age,city
