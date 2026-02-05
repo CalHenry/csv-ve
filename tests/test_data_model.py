@@ -56,8 +56,10 @@ class TestSave:
     def test_save_writes_csv_and_resets_modified(self, temp_csv_with_headers):
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
+        assert model.modified is False
+
         model.df = model.df.with_columns((pl.col("age") * 10).alias("age10"))
-        model.modified is True
+        assert model.modified is True
 
         model.save()
 
@@ -110,6 +112,7 @@ class TestSetCell:
     def test_col_idx_is_not_out_of_bound(self, temp_csv_with_headers):
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
+
         col_idx = len(model.df.columns) + 1
 
         with pytest.raises(IndexError, match=f"Column index {col_idx} out of bounds"):
@@ -118,6 +121,8 @@ class TestSetCell:
     def test_set_cell_updates_value_and_marks_modified(self, temp_csv_with_headers):
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
+        assert model.modified is False
+
         model.set_cell(row_idx=1, col_idx=1, value=99)
 
         assert model.df["age"][1] == IsInt(exactly=99)
@@ -183,7 +188,7 @@ class TestInsertRow:
         "test: insert_row()"
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
-        model.modified is False
+        assert model.modified is False
         nbr_rows_before = len(model.df)
 
         model.insert_row(row_idx=1)
@@ -213,6 +218,8 @@ class TestInsertColumn:
     def test_insert_column_beginning(self, temp_csv_with_headers):
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
+        assert model.modified is False
+
         model.insert_column(0, "new_beginning")
 
         assert model.df.columns[0] == "new_beginning"
@@ -224,6 +231,8 @@ class TestInsertColumn:
     def test_insert_column_in_middle(self, temp_csv_with_headers):
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
+        assert model.modified is False
+
         model.insert_column(1, "new_middle")
 
         assert model.df.columns[1] == "new_middle"
@@ -235,6 +244,8 @@ class TestInsertColumn:
     def test_insert_column_end(self, temp_csv_with_headers):
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
+        assert model.modified is False
+
         model.insert_column(3, "new_end")
 
         assert model.df.columns[-1] == "new_end"
@@ -247,6 +258,8 @@ class TestInsertColumn:
         "no names -> takes the"
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
+        assert model.modified is False
+
         col_idx = 1
         model.insert_column(col_idx)
 
@@ -259,6 +272,8 @@ class TestInsertColumn:
         "test no collisions between new names and existant names."
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
+        assert model.modified is False
+
         model.df = model.df.rename(
             {"age": "Column_1"}
         )  # we have to rename to the default col name of insert_column() to test
@@ -369,7 +384,7 @@ class TestDeleteCol:
         """Specified col should be deleted and marks data as modified"""
         model = CSVDataModel(temp_csv_with_headers)
         assert model.df is not None
-        model.modified is False
+        assert model.modified is False
 
         model.delete_column(1)
 
