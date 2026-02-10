@@ -23,12 +23,6 @@ class CoordInputScreen(ModalScreen[tuple[int, int] | None]):
         yield Input(placeholder="row:col", id="coord_input", classes="input_rowcol")
         yield Static("", id="error_message")
 
-    def compose2(self) -> ComposeResult:
-        """only Input widget and its border"""
-        with Container(id="nav_dialog"):
-            yield Input(placeholder="row:col", id="coord_input", classes="input_rowcol")
-            yield Static("", id="error_message")
-
     def on_mount(self) -> None:
         """Focus the coordinate input when mounted."""
         input = self.query_one("#coord_input", Input).focus()
