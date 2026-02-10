@@ -39,7 +39,7 @@ class CoordInputScreen(ModalScreen[tuple[int, int] | None]):
         value = coord_input.value.strip()
 
         if not value:  # do nothing - return to table screen
-            self.app.pop_screen()
+            self.dismiss(None)
             return
 
         # Parse the input

@@ -22,7 +22,7 @@ class CSVEditorApp(App):
         Binding("q", "quit", "Quit"),
         Binding("ctrl+s", "save", "Save"),
         Binding("ctrl+r", "reload", "Reload"),
-        Binding("enter", "edit_cell", "Edit Cell", show=True, priority=True),
+        Binding("enter", "edit_cell", "Edit Cell", show=True),
         Binding("escape", "cancel_edit", "Cancel", show=True),
         Binding("n", "insert_new_row_below_cursor", "new row", show=True),
         Binding("b", "insert_new_col_right_cursor", "new column", show=True),
@@ -180,7 +180,10 @@ class CSVEditorApp(App):
 
     # ---edit data actions--- #
     def action_edit_cell(self) -> None:
-        """Start editing selected cell in formula bar"""
+        """
+        Start editing selected cell in formula bar
+        This don't change the DataTable values
+        """
         table = self.query_one(DataTable)
         formula_bar = self.query_one("#formula_bar", Input)
 
@@ -196,6 +199,12 @@ class CSVEditorApp(App):
         formula_bar.focus()
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
+        """
+        After input is submited by pressing 'enter':
+        - capture the content entered in the formula bar
+        - populate it in the correct cell of the DataTable
+        - also changes the values in the data_model to keep visual DataTable and actual stored data up to date
+        """
         if event.input.id == "formula_bar" and hasattr(self, "editing_cell"):
             row_key, col_key, _ = self.editing_cell
             table = self.query_one(DataTable)
@@ -231,11 +240,10 @@ class CSVEditorApp(App):
         else:
             table.cursor_type = "cell"  # relevant for the cursor part of the code. Unrelated to cell modif but related to escape key
         # enter key
-        if (
-            event.key == "enter" and not formula_bar.has_focus
-            # and hasattr(self, "editing_cell")
-        ):
+        if event.key == "enter" and not formula_bar.has_focus:
             event.stop()
+
+            # and not any(isinstance(s, CoordInputScreen) for s in self.screen_stack)
 
     def _clear_edit_state(self, table: DataTable) -> None:
         """Helper to clean up after edit completion or cancelation"""
